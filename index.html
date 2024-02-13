@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satvik Restaurant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+
+<body>
+    <h1>Sattvik Menu Card</h1>
+
+    <select id="categoryDropdown" onchange="populateItems()">
+        <option value="">Select Category</option>
+    </select>
+
+    <select id="itemDropdown" onchange="populateDescriptions()">
+        <option value="">Select Item</option>
+    </select>
+
+    <div id="descriptionDiv"></div>
+
+    <div id="selectedItemsCard">
+        <div>
+            <h2>Selected Items</h2>
+            <ul id="selectedItemsList"></ul>
+        </div>
+        <p id="subtotal">Subtotal: $0.00</p>
+        <p id="cgstAmount">CGST (9%): $0.00</p>
+        <p id="sgstAmount">SGST (9%): $0.00"></p>
+        <p id="totalBill">Total Bill (including CGST & SGST): $0.00</p>
+    </div>
+
+    <script>
+        // JSON data
+        var menuData = {
+            "restaurant": "Gastronomic Haven",
+            "cuisine": "Eclectic Fusion",
+            "menu": [
+                {
+                    "category": "Appetizers",
+                    "items": [
+                        { "name": "Assorted Sushi Platter", "description": "Chef's selection of fresh sushi and sashimi.", "price": 24.99,  },
+                        { "name": "Truffle-infused Deviled Eggs", "description": "Deviled eggs with a hint of truffle oil.", "price": 14.99 },
+                        { "name": "Crispy Calamari", "description": "Golden-fried calamari served with zesty marinara sauce.", "price": 18.99 },
+                        { "name": "Stuffed Mushrooms", "description": "Mushroom caps stuffed with a blend of herbs and cream cheese.", "price": 16.99 },
+                        { "name": "Smoked Salmon Crostini", "description": "Sliced smoked salmon on crispy crostini with dill cream cheese.", "price": 22.99 },
+                        { "name": "Artisan Cheese Board", "description": "Assorted cheeses, fruits, and nuts with a side of honey.", "price": 28.99 },
+                        { "name": "Shrimp Cocktail", "description": "Chilled shrimp served with tangy cocktail sauce.", "price": 26.99 },
+                    ]
+                },
+                {
+                    "category": "Salads",
+                    "items": [
+                        { "name": "Kale and Quinoa Salad", "description": "Fresh kale and quinoa with a citrus vinaigrette.", "price": 16.99 },
+                        { "name": "Mango Avocado Salad", "description": "Mixed greens with mango, avocado, and cilantro-lime dressing.", "price": 19.99 },
+                        { "name": "Caesar Salad", "description": "Crisp romaine lettuce, parmesan cheese, and Caesar dressing.", "price": 14.99 },
+                        { "name": "Caprese Salad", "description": "Tomatoes, fresh mozzarella, and basil drizzled with balsamic glaze.", "price": 18.99 },
+                        { "name": "Grilled Chicken Cobb Salad", "description": "Grilled chicken, bacon, avocado, and blue cheese over mixed greens.", "price": 22.99 },
+                    ]
+                },
+                {
+                    "category": "Main Courses",
+                    "items": [
+                        { "name": "Grilled Filet Mignon", "description": "Juicy filet mignon cooked to perfection.", "price": 34.99 },
+                        { "name": "Vegetarian Paella", "description": "Saffron-infused rice with an assortment of vegetables.", "price": 22.99 },
+                        { "name": "Lobster Risotto", "description": "Creamy risotto with lobster tail and asparagus.", "price": 28.99 },
+                        { "name": "Pan-seared Duck Breast", "description": "Duck breast with orange glaze, served with wild rice.", "price": 30.99 },
+                        { "name": "Grilled Swordfish", "description": "Swordfish steak with lemon herb marinade, accompanied by roasted vegetables.", "price": 26.99 },
+                        { "name": "Wild Mushroom Ravioli", "description": "Ravioli stuffed with a medley of wild mushrooms in a truffle cream sauce.", "price": 20.99 },
+                    ]
+                },
+                {
+                    "category": "Desserts",
+                    "items": [
+                        { "name": "Tiramisu", "description": "Classic Italian dessert with layers of coffee-soaked ladyfingers and mascarpone.", "price": 12.99 },
+                        { "name": "Pistachio White Chocolate Tart", "description": "Buttery tart filled with pistachio cream and white chocolate.", "price": 16.99 },
+                        { "name": "Molten Chocolate Lava Cake", "description": "Warm chocolate cake with a gooey molten center, served with vanilla ice cream.", "price": 18.99 },
+                        { "name": "Mixed Berry Parfait", "description": "Layers of mixed berries, yogurt, and granola.", "price": 14.99 },
+                        { "name": "Crème Brûlée", "description": "Vanilla custard with a caramelized sugar crust.", "price": 20.99 },
+                        { "name": "Apple Pie a la Mode", "description": "Homemade apple pie served with a scoop of vanilla ice cream.", "price": 22.99 },
+                        { "name": "Chocolate-covered Strawberries", "description": "Fresh strawberries dipped in rich chocolate.", "price": 15.99 },
+                    ]
+                },
+                {
+                    "category": "Gujarati Lunch",
+                    "items": [
+                        { "name": "Dhokla Platter", "description": "Assorted dhokla variations served with mint and tamarind chutneys.", "price": 12.99 },
+                        { "name": "Undhiyu Thali", "description": "Traditional Gujarati thali featuring undhiyu, puri, rice, and a variety of side dishes.", "price": 15.99 },
+                        { "name": "Khandvi Rolls", "description": "Delicate rolls made from gram flour, yogurt, and spices, garnished with mustard seeds and coriander.", "price": 11.99 },
+                        { "name": "Gujarati Kadhi", "description": "Spiced yogurt soup with gram flour dumplings, tempered with mustard seeds and curry leaves.", "price": 10.99 },
+                        { "name": "Bharela Bhinda (Stuffed Okra)", "description": "Okra stuffed with a flavorful mixture of spices and besan (gram flour).", "price": 13.99 },
+                        { "name": "Aamras Puri", "description": "Puris served with a sweet mango puree, a classic Gujarati combination.", "price": 14.99 },
+                        { "name": "Dal Dhokli", "description": "Wheat flour dumplings cooked in a spicy lentil soup, a hearty and comforting dish.", "price": 12.99 }
+                    ]
+                },
+                {
+                    "category": "Marathi Lunch",
+                    "items": [
+                        { "name": "Puran Poli", "description": "Traditional Marathi flatbread stuffed with sweet lentil filling, served with ghee.", "price": 15.99 },
+                        { "name": "Misal Pav", "description": "Spicy sprouted lentil curry topped with farsan and served with pav (bread rolls).", "price": 12.99 },
+                        { "name": "Bharli Vangi", "description": "Eggplants stuffed with a spiced masala and cooked to perfection.", "price": 14.99 },
+                        { "name": "Pav Bhaji", "description": "Mixed vegetable curry served with buttered pav (bread rolls) and garnished with coriander.", "price": 16.99 },
+                        { "name": "Matki Usal", "description": "Sprouted moth beans cooked with spices, coconut, and served as a side dish.", "price": 13.99 },
+                        { "name": "Puri Bhaji", "description": "Fluffy puris served with aloo bhaji (spiced potato curry).", "price": 11.99 },
+                        { "name": "Masale Bhaat", "description": "Spiced rice cooked with vegetables and aromatic Maharashtrian spices.", "price": 17.99 }
+                    ]
+                },
+                {
+                    "category": "Italian Lunch",
+                    "items": [
+                        { "name": "Margherita Pizza", "description": "Classic pizza with tomato sauce, fresh mozzarella, and basil leaves.", "price": 14.99 },
+                        { "name": "Chicken Parmesan", "description": "Breaded and fried chicken cutlet topped with marinara sauce and melted mozzarella.", "price": 16.99 },
+                        { "name": "Penne alla Vodka", "description": "Penne pasta in a creamy tomato and vodka-infused sauce.", "price": 15.99 },
+                        { "name": "Eggplant Rollatini", "description": "Thinly sliced eggplant rolled and stuffed with ricotta cheese, baked in marinara sauce.", "price": 17.99 },
+                        { "name": "Spaghetti Carbonara", "description": "Spaghetti tossed with eggs, Parmesan cheese, pancetta, and black pepper.", "price": 18.99 },
+                        { "name": "Caprese Salad", "description": "Fresh tomatoes, mozzarella, and basil drizzled with balsamic glaze.", "price": 12.99 },
+                        { "name": "Gnocchi with Pesto Sauce", "description": "Soft potato gnocchi tossed in a vibrant pesto sauce.", "price": 19.99 }
+                    ]
+                },
+                {
+                    "category": "Junk Food",
+                    "items": [
+                        { "name": "Cheeseburger Deluxe", "description": "Classic beef burger with melted cheese, lettuce, tomato, and special sauce.", "price": 9.99 },
+                        { "name": "Loaded Nachos", "description": "Crispy tortilla chips topped with melted cheese, jalapeños, sour cream, and guacamole.", "price": 12.99 },
+                        { "name": "Chicken Wings Combo", "description": "Spicy buffalo and honey barbecue wings served with ranch dressing.", "price": 14.99 },
+                        { "name": "Chili Cheese Fries", "description": "Golden fries topped with hearty chili and melted cheese.", "price": 10.99 },
+                        { "name": "Deep-Fried Mac 'n' Cheese Bites", "description": "Creamy mac 'n' cheese bites coated in a crispy golden crust.", "price": 11.99 },
+                        { "name": "Pepperoni Pizza Rolls", "description": "Rolled pizza dough stuffed with pepperoni and mozzarella, baked to perfection.", "price": 13.99 },
+                        { "name": "Oreo Milkshake", "description": "A decadent milkshake blended with Oreo cookies and topped with whipped cream.", "price": 8.99 }
+                    ]
+                },
+                {
+                    "category": "Gujarati Junk Food",
+                    "items": [
+                        { "name": "Dhokla Pops", "description": "Miniature dhoklas served on sticks, perfect for snacking.", "price": 10.99 },
+                        { "name": "Khandvi Rolls", "description": "Delicate gram flour rolls filled with a spiced coconut and mustard paste.", "price": 12.99 },
+                        { "name": "Fafda Nachos", "description": "Crispy fafda chips served with tangy tamarind chutney and yogurt.", "price": 14.99 },
+                        { "name": "Thepla Sliders", "description": "Soft thepla bread filled with spicy potato filling, served as sliders.", "price": 16.99 },
+                        { "name": "Gathiya Tacos", "description": "Crunchy gathiya pieces served taco-style with shredded cabbage and chutney.", "price": 13.99 },
+                        { "name": "Sev Puri Pizza", "description": "Mini pizza topped with sev, chutneys, and diced vegetables in a fusion twist.", "price": 15.99 },
+                        { "name": "Chakri Nachos Supreme", "description": "Spiral-shaped chakri snacks piled high with cheese, jalapenos, and salsa.", "price": 17.99 }
+                    ]
+                },
+                {
+                    "category": "South Indian Junk Food",
+                    "items": [
+                        { "name": "Masala Dosa Burger", "description": "A fusion delight with a masala dosa filling in a burger bun, served with chutney mayo.", "price": 14.99 },
+                        { "name": "Chilli Idli Bites", "description": "Crispy and spicy bite-sized idlis tossed in a flavorful chili sauce.", "price": 12.99 },
+                        { "name": "Curry Leaf Fries", "description": "Golden fries seasoned with curry leaves, mustard seeds, and spices.", "price": 10.99 },
+                        { "name": "Paneer Tikka Pizza Uttapam", "description": "Uttapam topped with paneer tikka, bell peppers, and cheese, resembling a pizza.", "price": 16.99 },
+                        { "name": "Vada Pav Sliders", "description": "Mini vada pav sliders with spiced potato patties and chutney in soft buns.", "price": 13.99 },
+                        { "name": "Coconut Chili Popcorn", "description": "Popcorn coated in a blend of coconut, chili powder, and traditional spices.", "price": 9.99 },
+                        { "name": "Schezwan Dosa Rolls", "description": "Dosa rolls filled with a spicy Schezwan sauce, vegetables, and Indo-Chinese flavors.", "price": 15.99 }
+                    ]
+                },
+            ]
+        }
+
+
+        var categoryDropdown = document.getElementById("categoryDropdown");
+        menuData.menu.forEach(function (category) {
+            var option = document.createElement("option");
+            option.value = category.category;
+            option.text = category.category;
+            categoryDropdown.add(option);
+        });
+
+        // Function to populate items in the dropdown based on selected category
+        function populateItems() {
+            var selectedCategory = categoryDropdown.value;
+            var itemDropdown = document.getElementById("itemDropdown");
+            itemDropdown.innerHTML = "<option value=''>Select Item</option>";
+
+            if (selectedCategory) {
+                var selectedCategoryData = menuData.menu.find(category => category.category === selectedCategory);
+                selectedCategoryData.items.forEach(function (item) {
+                    var option = document.createElement("option");
+                    option.value = item.name;
+                    option.text = item.name;
+                    itemDropdown.add(option);
+                });
+            }
+        }
+
+        // Function to populate item descriptions in the descriptionDiv
+        function populateDescriptions() {
+            var selectedCategory = categoryDropdown.value;
+            var selectedCategoryData = menuData.menu.find(category => category.category === selectedCategory);
+
+            var selectedItem = itemDropdown.value;
+            var selectedItemData = selectedCategoryData.items.find(item => item.name === selectedItem);
+
+            var descriptionDiv = document.getElementById("descriptionDiv");
+            descriptionDiv.innerHTML = "";
+
+            if (selectedItemData) {
+                var descriptionParagraph = document.createElement("p");
+                descriptionParagraph.textContent = `Description: ${selectedItemData.description} | Price: $${selectedItemData.price.toFixed(2)}`;
+                descriptionDiv.appendChild(descriptionParagraph);
+
+                // Display selected item and update total amount
+                displaySelectedItem(selectedItemData);
+            }
+        }
+
+        // Function to display selected item in the list
+        function displaySelectedItem(item) {
+            var selectedItemsList = document.getElementById("selectedItemsList");
+            var listItem = document.createElement("li");
+
+            // Delete button
+            var deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.className = "deleteButton";
+            deleteButton.onclick = function () {
+                // Delete item function
+                deleteItem(listItem);
+            };
+
+            // Display selected item and delete button
+            listItem.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+            listItem.appendChild(deleteButton);
+
+            selectedItemsList.appendChild(listItem);
+
+            // Update the total amount after adding an item
+            updateTotalAmount();
+        }
+
+        // Function to calculate total amount dynamically
+        function updateTotalAmount() {
+            var selectedItemsList = document.getElementById("selectedItemsList");
+            var subtotalParagraph = document.getElementById("subtotal");
+            var cgstAmountParagraph = document.getElementById("cgstAmount");
+            var sgstAmountParagraph = document.getElementById("sgstAmount");
+            var totalBillParagraph = document.getElementById("totalBill");
+            var subtotal = 0;
+            var gstRate = 0.09; // 9% GST rate for both CGST and SGST
+
+            // Iterate through selected items and sum up the prices
+            selectedItemsList.childNodes.forEach(function (listItem) {
+                var itemPrice = parseFloat(listItem.textContent.split('- $')[1]);
+                subtotal += itemPrice;
+            });
+
+            // Calculate CGST and SGST amounts
+            var cgstAmount = subtotal * gstRate;
+            var sgstAmount = subtotal * gstRate;
+
+            // Calculate total bill including CGST and SGST
+            var totalBill = subtotal + cgstAmount + sgstAmount;
+
+            // Display the subtotal, CGST amount, SGST amount, and total bill
+            subtotalParagraph.textContent = `Subtotal: $${subtotal.toFixed(2)}`;
+            cgstAmountParagraph.textContent = `CGST (9%): $${cgstAmount.toFixed(2)}`;
+            sgstAmountParagraph.textContent = `SGST (9%): $${sgstAmount.toFixed(2)}`;
+            totalBillParagraph.textContent = `Total Bill (including CGST  & SGST): $${totalBill.toFixed(2)}`;
+        }
+
+        // Function to handle item deletion
+        function deleteItem(listItem) {
+            listItem.remove();
+            // Update the total amount after deleting an item
+            updateTotalAmount();
+        }
+
+        // Initial total amount calculation when the page loads
+        updateTotalAmount();
+    </script>
+
+</body>
+
+</html>

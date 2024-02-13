@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+select {
+    margin-bottom: 10px;
+}
+
+#selectedItemsCard {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#selectedItemsList {
+    list-style-type: none;
+    padding: 0;
+}
+
+button{
+    padding: 5px;
+    background-color: greenyellow;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover{
+    border: 5px;
+    color: black;
+    background-color: yellow;
+}
+
+#selectedItemsList li {
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.deleteButton {
+    cursor: pointer;
+    background-color: red;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+@media only screen and (min-width: 600px) {
+    select {
+        width: 48%;
+        margin-right: 2%;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    select {
+        width: 30%;
+        margin-right: 2%;
+    }
+}
