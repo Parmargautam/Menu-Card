@@ -7,11 +7,14 @@
     <title>Satvik Restaurant</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="db.json"> -->
 
 </head>
 
 <body>
-    <h1>Sattvik Menu Card</h1>
+    <div class="satvik">
+        <h1>Sattvik Menu Card</h1>
+    </div>
 
     <select id="categoryDropdown" onchange="populateItems()">
         <option value="">Select Category</option>
@@ -23,15 +26,25 @@
 
     <div id="descriptionDiv"></div>
 
-    <div id="selectedItemsCard">
-        <div>
-            <h2>Selected Items</h2>
-            <ul id="selectedItemsList"></ul>
+    <div id="selectedAndOrderedItems">
+        <div id="selectedItemsCard">
+            <div>
+                <h2>Selected Items</h2>
+                <ul id="selectedItemsList"></ul>
+            </div>
+            <p id="subtotal">Subtotal: $0.00</p>
+            <p id="cgstAmount">CGST (9%): $0.00</p>
+            <p id="sgstAmount">SGST (9%): $0.00"></p>
+            <p id="totalBill">Total Bill (including CGST & SGST): $0.00</p>
+            <button onclick="sendOrderData()">Place Order</button>
         </div>
-        <p id="subtotal">Subtotal: $0.00</p>
-        <p id="cgstAmount">CGST (9%): $0.00</p>
-        <p id="sgstAmount">SGST (9%): $0.00"></p>
-        <p id="totalBill">Total Bill (including CGST & SGST): $0.00</p>
+
+        <div id="orderedItemsCard">
+            <div>
+                <h2>Previous Items</h2>
+                <ul id="orderedItemsList"></ul>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -43,13 +56,13 @@
                 {
                     "category": "Appetizers",
                     "items": [
-                        { "name": "Assorted Sushi Platter", "description": "Chef's selection of fresh sushi and sashimi.", "price": 24.99,  },
-                        { "name": "Truffle-infused Deviled Eggs", "description": "Deviled eggs with a hint of truffle oil.", "price": 14.99 },
-                        { "name": "Crispy Calamari", "description": "Golden-fried calamari served with zesty marinara sauce.", "price": 18.99 },
-                        { "name": "Stuffed Mushrooms", "description": "Mushroom caps stuffed with a blend of herbs and cream cheese.", "price": 16.99 },
-                        { "name": "Smoked Salmon Crostini", "description": "Sliced smoked salmon on crispy crostini with dill cream cheese.", "price": 22.99 },
+                        { "name": "Assorted Sushi Platter", "description": "Chef's selection of fresh sushi and sashimi.", "price": 24.99 },
+                        { "name": "Truffle-infused Deviled Eggs", "description": "Deviled eggs with a hint of truffle oil.", "price": 14.99},
+                        { "name": "Crispy Calamari", "description": "Golden-fried calamari served with zesty marinara sauce.", "price": 18.99},
+                        { "name": "Stuffed Mushrooms", "description": "Mushroom caps stuffed with a blend of herbs and cream cheese.", "price": 16.99},
+                        { "name": "Smoked Salmon Crostini", "description": "Sliced smoked salmon on crispy crostini with dill cream cheese.", "price": 22.99},
                         { "name": "Artisan Cheese Board", "description": "Assorted cheeses, fruits, and nuts with a side of honey.", "price": 28.99 },
-                        { "name": "Shrimp Cocktail", "description": "Chilled shrimp served with tangy cocktail sauce.", "price": 26.99 },
+                        { "name": "Shrimp Cocktail", "description": "Chilled shrimp served with tangy cocktail sauce.", "price": 26.99},
                     ]
                 },
                 {
@@ -59,17 +72,13 @@
                         { "name": "Mango Avocado Salad", "description": "Mixed greens with mango, avocado, and cilantro-lime dressing.", "price": 19.99 },
                         { "name": "Caesar Salad", "description": "Crisp romaine lettuce, parmesan cheese, and Caesar dressing.", "price": 14.99 },
                         { "name": "Caprese Salad", "description": "Tomatoes, fresh mozzarella, and basil drizzled with balsamic glaze.", "price": 18.99 },
-                        { "name": "Grilled Chicken Cobb Salad", "description": "Grilled chicken, bacon, avocado, and blue cheese over mixed greens.", "price": 22.99 },
                     ]
                 },
                 {
                     "category": "Main Courses",
                     "items": [
-                        { "name": "Grilled Filet Mignon", "description": "Juicy filet mignon cooked to perfection.", "price": 34.99 },
                         { "name": "Vegetarian Paella", "description": "Saffron-infused rice with an assortment of vegetables.", "price": 22.99 },
                         { "name": "Lobster Risotto", "description": "Creamy risotto with lobster tail and asparagus.", "price": 28.99 },
-                        { "name": "Pan-seared Duck Breast", "description": "Duck breast with orange glaze, served with wild rice.", "price": 30.99 },
-                        { "name": "Grilled Swordfish", "description": "Swordfish steak with lemon herb marinade, accompanied by roasted vegetables.", "price": 26.99 },
                         { "name": "Wild Mushroom Ravioli", "description": "Ravioli stuffed with a medley of wild mushrooms in a truffle cream sauce.", "price": 20.99 },
                     ]
                 },
@@ -113,8 +122,6 @@
                     "category": "Italian Lunch",
                     "items": [
                         { "name": "Margherita Pizza", "description": "Classic pizza with tomato sauce, fresh mozzarella, and basil leaves.", "price": 14.99 },
-                        { "name": "Chicken Parmesan", "description": "Breaded and fried chicken cutlet topped with marinara sauce and melted mozzarella.", "price": 16.99 },
-                        { "name": "Penne alla Vodka", "description": "Penne pasta in a creamy tomato and vodka-infused sauce.", "price": 15.99 },
                         { "name": "Eggplant Rollatini", "description": "Thinly sliced eggplant rolled and stuffed with ricotta cheese, baked in marinara sauce.", "price": 17.99 },
                         { "name": "Spaghetti Carbonara", "description": "Spaghetti tossed with eggs, Parmesan cheese, pancetta, and black pepper.", "price": 18.99 },
                         { "name": "Caprese Salad", "description": "Fresh tomatoes, mozzarella, and basil drizzled with balsamic glaze.", "price": 12.99 },
@@ -126,7 +133,6 @@
                     "items": [
                         { "name": "Cheeseburger Deluxe", "description": "Classic beef burger with melted cheese, lettuce, tomato, and special sauce.", "price": 9.99 },
                         { "name": "Loaded Nachos", "description": "Crispy tortilla chips topped with melted cheese, jalapeños, sour cream, and guacamole.", "price": 12.99 },
-                        { "name": "Chicken Wings Combo", "description": "Spicy buffalo and honey barbecue wings served with ranch dressing.", "price": 14.99 },
                         { "name": "Chili Cheese Fries", "description": "Golden fries topped with hearty chili and melted cheese.", "price": 10.99 },
                         { "name": "Deep-Fried Mac 'n' Cheese Bites", "description": "Creamy mac 'n' cheese bites coated in a crispy golden crust.", "price": 11.99 },
                         { "name": "Pepperoni Pizza Rolls", "description": "Rolled pizza dough stuffed with pepperoni and mozzarella, baked to perfection.", "price": 13.99 },
@@ -169,7 +175,8 @@
             categoryDropdown.add(option);
         });
 
-        // Function to populate items in the dropdown based on selected category
+        var currentBillNumber = 1; // Initialize the bill number
+
         function populateItems() {
             var selectedCategory = categoryDropdown.value;
             var itemDropdown = document.getElementById("itemDropdown");
@@ -177,10 +184,25 @@
 
             if (selectedCategory) {
                 var selectedCategoryData = menuData.menu.find(category => category.category === selectedCategory);
+
+                // Populate item dropdown with name, description, price, and image
                 selectedCategoryData.items.forEach(function (item) {
                     var option = document.createElement("option");
-                    option.value = item.name;
-                    option.text = item.name;
+                    option.value = item.name; // Use the item name as the value
+
+                    // Create an img element for the item image
+                    var img = document.createElement("img");
+                    img.src = item.image; // Assuming item has an 'image' property with the URL
+                    img.alt = item.name; // Alt text for accessibility
+
+                    // Create a span element to hold the text content
+                    var textContentSpan = document.createElement("span");
+                    textContentSpan.textContent = `${item.name} - ${item.description} - $${item.price.toFixed(2)}`;
+
+                    // Append the image and text content to the option
+                    option.appendChild(img);
+                    option.appendChild(textContentSpan);
+
                     itemDropdown.add(option);
                 });
             }
@@ -207,7 +229,6 @@
             }
         }
 
-        // Function to display selected item in the list
         function displaySelectedItem(item) {
             var selectedItemsList = document.getElementById("selectedItemsList");
             var listItem = document.createElement("li");
@@ -217,21 +238,21 @@
             deleteButton.textContent = "Delete";
             deleteButton.className = "deleteButton";
             deleteButton.onclick = function () {
-                // Delete item function
+                // item delete mate
                 deleteItem(listItem);
             };
 
-            // Display selected item and delete button
-            listItem.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+            //selected item display karva current bill number sathe
+            listItem.textContent = `Bill ${currentBillNumber}: ${item.name} - $${item.price.toFixed(2)}`;
             listItem.appendChild(deleteButton);
 
             selectedItemsList.appendChild(listItem);
 
-            // Update the total amount after adding an item
+            // button click karya vagar total amount update karva
             updateTotalAmount();
         }
 
-        // Function to calculate total amount dynamically
+        //total amount automatically calculate karva mate
         function updateTotalAmount() {
             var selectedItemsList = document.getElementById("selectedItemsList");
             var subtotalParagraph = document.getElementById("subtotal");
@@ -239,7 +260,7 @@
             var sgstAmountParagraph = document.getElementById("sgstAmount");
             var totalBillParagraph = document.getElementById("totalBill");
             var subtotal = 0;
-            var gstRate = 0.09; // 9% GST rate for both CGST and SGST
+            var gstRate = 0.09; // 9% GST CGST and SGST
 
             // Iterate through selected items and sum up the prices
             selectedItemsList.childNodes.forEach(function (listItem) {
@@ -251,21 +272,93 @@
             var cgstAmount = subtotal * gstRate;
             var sgstAmount = subtotal * gstRate;
 
-            // Calculate total bill including CGST and SGST
+            // Calculate the total bill including CGST and SGST
             var totalBill = subtotal + cgstAmount + sgstAmount;
 
             // Display the subtotal, CGST amount, SGST amount, and total bill
             subtotalParagraph.textContent = `Subtotal: $${subtotal.toFixed(2)}`;
             cgstAmountParagraph.textContent = `CGST (9%): $${cgstAmount.toFixed(2)}`;
             sgstAmountParagraph.textContent = `SGST (9%): $${sgstAmount.toFixed(2)}`;
-            totalBillParagraph.textContent = `Total Bill (including CGST  & SGST): $${totalBill.toFixed(2)}`;
+            totalBillParagraph.textContent = `Total Bill (including CGST & SGST): $${totalBill.toFixed(2)}`;
         }
 
-        // Function to handle item deletion
         function deleteItem(listItem) {
             listItem.remove();
             // Update the total amount after deleting an item
             updateTotalAmount();
+        }
+
+        function displayOrderedItem(item) {
+            var orderedItemsList = document.getElementById("orderedItemsList");
+            var listItem = document.createElement("li");
+
+            listItem.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+
+            orderedItemsList.appendChild(listItem);
+        }
+
+        // Function to send order data and update both selected and ordered items
+        function sendOrderData() {
+            var selectedItemsList = document.getElementById("selectedItemsList");
+            var orderedItemsList = document.getElementById("orderedItemsList");
+
+            var orderData = {
+                restaurant: "Gastronomic Haven",
+                items: []
+            };
+
+            // Process selected items
+            selectedItemsList.childNodes.forEach(function (listItem) {
+                var itemPrice = parseFloat(listItem.textContent.split('- $')[1]);
+                var itemName = listItem.textContent.split('- $')[0].trim();
+                orderData.items.push({ name: itemName, price: itemPrice });
+            });
+
+            // Display selected items
+            updateTotalAmount();
+
+            // Fetch to save the order data
+            fetch('https://jsonplaceholder.typicode.com/todos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    alert('Order placed successfully!');
+                    resetOrderData();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Error placing the order. Please try again.');
+                });
+
+            // Process ordered items and display
+            orderData.items.forEach(function (item) {
+                displayOrderedItem(item);
+            });
+
+            // Increment the current bill number for the next order
+            currentBillNumber++;
+        }
+
+        function resetOrderData() {
+            // Clear selected items
+            var selectedItemsList = document.getElementById("selectedItemsList");
+            selectedItemsList.innerHTML = "";
+
+            // Reset total amount
+            var subtotalParagraph = document.getElementById("subtotal");
+            var cgstAmountParagraph = document.getElementById("cgstAmount");
+            var sgstAmountParagraph = document.getElementById("sgstAmount");
+            var totalBillParagraph = document.getElementById("totalBill");
+            subtotalParagraph.textContent = "Subtotal: $0.00";
+            cgstAmountParagraph.textContent = "CGST (9%): $0.00";
+            sgstAmountParagraph.textContent = "SGST (9%): $0.00";
+            totalBillParagraph.textContent = "Total Bill (including CGST & SGST): $0.00";
         }
 
         // Initial total amount calculation when the page loads
