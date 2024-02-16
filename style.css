@@ -3,6 +3,13 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; */
+}
+
+.whole{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,6 +24,15 @@ select {
     border: 1px solid #ccc;
     padding: 10px;
     margin-top: 20px;
+}
+
+.tm-video-wrapper { position: relative; }
+
+#tm-video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: -1000;
 }
 
 #selectedItemsList {
@@ -53,6 +69,11 @@ button:hover{
     border-radius: 5px;
 }
 
+.satvik{
+    background: linear-gradient(to right, #f32170, #ffeb07, #2196f3, #ff00eb);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
 @media only screen and (min-width: 600px) {
     select {
         width: 48%;
